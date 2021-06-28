@@ -1,0 +1,2 @@
+1,mani dulce,dulces,12.45,600;
+2,pollo entero,carnes,22.5,100;
