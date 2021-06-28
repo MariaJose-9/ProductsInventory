@@ -30,6 +30,7 @@ void list_products(Tlista &lista);
 void write_listing_header();
 void show_product (productStruct p);
 void read_products_document(Tlista &lista);
+void write_product_document(productStruct product);
 int main_menu ();
 
 int main() {
@@ -52,7 +53,7 @@ int main() {
 		 		list_products(lista);
 		 	break;
 		 	default:
-		 		cout << "caso default" << endl;
+		 		cout << "Saliendo......" << endl;
 		 	break;
 		}
 	}while(opcion != 0);
@@ -67,7 +68,6 @@ int main_menu(){
 	cout << "2 - Editar producto"  << endl;
 	cout << "3 - Eliminar producto"      << endl;
 	cout << "4 - Listar productos" << endl;
-	cout << "5 - Eliminar todos los productos" << endl;
 	cout << "0 - Salir del programa"     << endl;
 	cout << " \n Option: "; 
 	cin >> opcion;
@@ -110,6 +110,8 @@ void insert_product (Tlista &lista)
 //	    << "; Precio: " << product.price
 //	    << "; Cantidad: " << product.quantity
 //	    << endl;
+
+	write_product_document(product);
 	    
 	insert_product_to_list(lista, product);
 }
@@ -296,12 +298,12 @@ void read_products_document(Tlista &lista){
 				dato = "";
 			}
 		}
-//		cout << "\n\n: " << endl;
-//		cout << "datos: " << datosArray[0]<< endl;
-//		cout << "datos: " << datosArray[1]<< endl;
-//		cout << "datos: " << datosArray[2]<< endl;
-//		cout << "datos: " << datosArray[3]<< endl;
-//		cout << "datos: " << datosArray[4]<< endl;
+		cout << "\n\n: " << endl;
+		cout << "datos: " << datosArray[0]<< endl;
+		cout << "datos: " << datosArray[1]<< endl;
+		cout << "datos: " << datosArray[2]<< endl;
+		cout << "datos: " << datosArray[3]<< endl;
+		cout << "datos: " << datosArray[4]<< endl;
 		product.ID = datosArray[0];
 		product.name = datosArray[1];
 		product.category = datosArray[2];
@@ -309,5 +311,16 @@ void read_products_document(Tlista &lista){
 		product.quantity = stoi(datosArray[4]);
 		insert_product_to_list(lista, product); 
     }while (! fichero.eof());
+    fichero.close();
+}
+
+void write_product_document(productStruct product){
+	string nombre = "products.txt";
+	ofstream fichero(nombre.c_str(), ios_base::app);
+    fichero << endl << product.ID << ","
+	<< product.name << ","
+	<< product.category << ","
+	<< product.price << ","
+	<< product.quantity << ";";
     fichero.close();
 }
