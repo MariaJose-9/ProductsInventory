@@ -1,3 +1,4 @@
 
 2,limonada,bebidas,0.85,150;
-3,chuleta,carnes,12.25,200;
+3,caramelos 100u,dulces,3,500;
+1,caramelo,dulces,1.45,300;
