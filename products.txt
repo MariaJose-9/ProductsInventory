@@ -1,2 +1,3 @@
-1,dulces,mani dulce,12.45,500;
-2,chuleta x4,carnes,15.24,300;
+
+2,limonada,bebidas,0.85,150;
+3,chuleta,carnes,12.25,200;

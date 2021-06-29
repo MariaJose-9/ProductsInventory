@@ -1,0 +1,3 @@
+inserta productos al final de la lista
+edita producto por el id
+elimina producto por el id

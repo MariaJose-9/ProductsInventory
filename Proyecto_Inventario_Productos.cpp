@@ -4,6 +4,8 @@
 #include <fstream>
 using namespace std;
 
+const string DOCUMENT_NAME = "products.txt";
+
 struct productStruct
 {
     string ID;
@@ -30,7 +32,9 @@ void list_products(Tlista &lista);
 void write_listing_header();
 void show_product (productStruct p);
 void read_products_document(Tlista &lista);
-void write_product_document(productStruct product);
+void save_product(productStruct product);
+void write_product_document(productStruct product, ofstream &file);
+void write_all_products(Tlista &lista);
 int main_menu ();
 
 int main() {
@@ -111,7 +115,7 @@ void insert_product (Tlista &lista)
 //	    << "; Cantidad: " << product.quantity
 //	    << endl;
 
-	write_product_document(product);
+	save_product(product);
 	    
 	insert_product_to_list(lista, product);
 }
@@ -163,6 +167,7 @@ void update_product(Tlista &lista, string ID){
             	write_listing_header();
             	show_product(aux->product);
                 aux->product = read_product(ID);
+                write_all_products(lista);
                 cout<<"El producto con ID " <<ID<< " ha sido actualizado\n";
                 cout << "\n";
 				system("pause");
@@ -209,6 +214,7 @@ void delete_product(Tlista &lista, string ID)
                     ant->next = aux->next;
  
                 delete(aux);
+                write_all_products(lista);
                 cout<<"El producto con ID " <<ID<< " ha sido eliminado\n";
                 cout << "\n";
 				system("pause");
@@ -270,7 +276,7 @@ void list_products(Tlista &lista){
 
 /*-----------------------------------------------Funciones para documentos---------------------------------------------*/
 void read_products_document(Tlista &lista){
-    string nombre = "products.txt";
+    string nombre = DOCUMENT_NAME;
     string linea;
  
     ifstream fichero(nombre.c_str());
@@ -283,44 +289,69 @@ void read_products_document(Tlista &lista){
     do
     {
         getline(fichero,linea);
-      	productStruct product;
-    	string datosArray [5];
-    	int len = linea.size() +1;
-    	int index = 0;
-    	string dato = "";
-		for(int i=0;i<=len;i++)
-		{
-			if(linea[i] != ',' && linea[i] != ';'){
-				dato = dato + linea[i];	
-			}else{
-				datosArray[index] = dato;
-				index++;
-				dato = "";
+        bool emptyLine = linea.empty();
+        if(!linea.empty()){
+        	productStruct product;
+	    	string datosArray [5];
+	    	int len = linea.size() +1;
+	    	int index = 0;
+	    	string dato = "";
+			for(int i = 0;i < len; i++)
+			{
+				if(linea[i] != ',' && linea[i] != ';'){
+					dato = dato + linea[i];	
+				}else{
+					datosArray[index] = dato;
+					index++;
+					dato = "";
+				}
 			}
+//			cout << "\n\n " << endl;
+//			cout << "datos: " << datosArray[0]<< endl;
+//			cout << "datos: " << datosArray[1]<< endl;
+//			cout << "datos: " << datosArray[2]<< endl;
+//			cout << "datos: " << datosArray[3]<< endl;
+//			cout << "datos: " << datosArray[4]<< endl;
+			product.ID = datosArray[0];
+			product.name = datosArray[1];
+			product.category = datosArray[2];
+			product.price = stof(datosArray[3]);
+			product.quantity = stoi(datosArray[4]);
+			insert_product_to_list(lista, product); 
 		}
-		cout << "\n\n: " << endl;
-		cout << "datos: " << datosArray[0]<< endl;
-		cout << "datos: " << datosArray[1]<< endl;
-		cout << "datos: " << datosArray[2]<< endl;
-		cout << "datos: " << datosArray[3]<< endl;
-		cout << "datos: " << datosArray[4]<< endl;
-		product.ID = datosArray[0];
-		product.name = datosArray[1];
-		product.category = datosArray[2];
-		product.price = stof(datosArray[3]);
-		product.quantity = stoi(datosArray[4]);
-		insert_product_to_list(lista, product); 
+      	
     }while (! fichero.eof());
     fichero.close();
 }
 
-void write_product_document(productStruct product){
-	string nombre = "products.txt";
-	ofstream fichero(nombre.c_str(), ios_base::app);
-    fichero << endl << product.ID << ","
+void save_product(productStruct product){
+	string nombre = DOCUMENT_NAME;
+	ofstream file(nombre.c_str(), ios_base::app);
+	if (file.fail())
+    cerr << "Error al abrir el archivo: Pruebas.txt" << endl;
+    else{
+		write_product_document(product, file);
+		file.close();
+	}
+}
+
+void write_product_document(productStruct product, ofstream &file){
+    file << endl << product.ID << ","
 	<< product.name << ","
 	<< product.category << ","
 	<< product.price << ","
 	<< product.quantity << ";";
-    fichero.close();
+}
+
+void write_all_products(Tlista &lista){
+	Tlista aux;
+	aux = lista;
+	string nombre = DOCUMENT_NAME;
+	ofstream file(nombre.c_str());
+    do
+    {
+    	write_product_document(aux->product, file);
+        aux = aux->next;
+    }while(aux != NULL);
+    file.close();
 }
